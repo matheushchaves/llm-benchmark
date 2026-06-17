@@ -1,0 +1,31 @@
+- id: summ_extract_json
+  prompt: |
+    Extraia as seguintes informações do texto abaixo e retorne como JSON com as chaves: nome, cargo, empresa, email, telefone.
+
+    "Olá, meu nome é Roberto Ferreira e trabalho como Gerente de Projetos na TechBrasil Soluções LTDA. Pode entrar em contato pelo e-mail roberto.ferreira@techbrasil.com.br ou pelo telefone (11) 98765-4321."
+  category: summarization
+  judge_hints: "Verificar: JSON válido, todos os 5 campos presentes, valores corretos: nome=Roberto Ferreira, cargo=Gerente de Projetos, empresa=TechBrasil Soluções LTDA, email=roberto.ferreira@techbrasil.com.br, telefone=(11) 98765-4321."
+
+- id: summ_bullet_points
+  prompt: |
+    Resuma o texto abaixo em até 4 bullets concisos em português:
+
+    "A inteligência artificial generativa está transformando rapidamente o mercado de trabalho global. Estudos recentes indicam que até 30% das tarefas atuais podem ser automatizadas nos próximos 5 anos, especialmente em áreas como atendimento ao cliente, análise de dados e criação de conteúdo. Por outro lado, novas profissões estão emergindo, como engenheiros de prompt, especialistas em ética de IA e auditores de algoritmos. Especialistas recomendam que profissionais invistam em habilidades complementares à IA, como pensamento crítico, criatividade e inteligência emocional."
+  category: summarization
+  judge_hints: "Verificar: 4 bullets ou menos, captura ideias principais (automação, novas profissões, recomendações), conciso e em português correto."
+
+- id: summ_sentiment
+  prompt: |
+    Analise o sentimento do comentário abaixo e classifique como POSITIVO, NEGATIVO ou NEUTRO. Justifique em uma frase.
+
+    "O produto chegou no prazo, embalagem estava ok. Mas a qualidade do material não é o que eu esperava pelo preço. O atendimento quando reclamei foi demorado. Não sei se compraria de novo."
+  category: summarization
+  judge_hints: "Classificação esperada: NEGATIVO (ou MISTO tendendo a negativo). Verificar: classificação razoável, justificativa coerente com o texto."
+
+- id: summ_titles
+  prompt: |
+    Gere 3 títulos alternativos para o artigo abaixo, do mais formal ao mais informal:
+
+    "Pesquisadores da Universidade de São Paulo desenvolveram uma técnica que usa bactérias modificadas geneticamente para decompor plásticos em 48 horas, processo que naturalmente levaria centenas de anos."
+  category: summarization
+  judge_hints: "Verificar: exatamente 3 títulos, progressão clara de formal a informal, todos relevantes ao conteúdo do artigo."

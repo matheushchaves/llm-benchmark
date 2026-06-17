@@ -1,0 +1,24 @@
+- id: code_fibonacci
+  prompt: "Escreva uma função Python que retorna o n-ésimo número de Fibonacci usando memoização. Mostre um exemplo de uso."
+  category: code
+  judge_hints: "Verificar: uso correto de memoização (dict, @lru_cache ou similar), função correta, complexidade O(n), código limpo e legível."
+
+- id: code_binary_search
+  prompt: "Implemente busca binária em Python para uma lista ordenada de inteiros. Retorne o índice do elemento ou -1 se não encontrado."
+  category: code
+  judge_hints: "Verificar: lógica correta (mid, low, high), trata lista vazia, retorna -1 quando não encontra, complexidade O(log n)."
+
+- id: code_palindrome
+  prompt: "Escreva uma função Python que verifica se uma string é palíndromo, ignorando espaços e maiúsculas/minúsculas."
+  category: code
+  judge_hints: "Verificar: normalização (strip, lower), ignora espaços, lógica correta, trata string vazia."
+
+- id: code_fizzbuzz
+  prompt: "Escreva FizzBuzz em Python: para números de 1 a 100, imprima 'Fizz' para múltiplos de 3, 'Buzz' para múltiplos de 5, 'FizzBuzz' para múltiplos de ambos, e o número caso contrário."
+  category: code
+  judge_hints: "Verificar: ordem das condições (FizzBuzz antes de Fizz/Buzz), cobre todos os casos, código simples."
+
+- id: code_flatten_list
+  prompt: "Escreva uma função Python que achata uma lista aninhada de qualquer profundidade. Exemplo: [[1,[2,3]],[4]] deve retornar [1,2,3,4]."
+  category: code
+  judge_hints: "Verificar: recursão ou iteração correta, trata listas vazias, trata profundidade arbitrária, resultado correto."

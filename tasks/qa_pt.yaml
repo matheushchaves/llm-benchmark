@@ -1,0 +1,19 @@
+- id: qa_capital
+  prompt: "Qual é a capital do Brasil e por que ela foi construída no interior do país? Responda em português."
+  category: qa_pt
+  judge_hints: "Resposta correta: Brasília. Motivos: integração do interior, desenvolvimento do Centro-Oeste, decisão de JK (inaugurada em 1960). Verificar: capital correta, explicação histórica precisa, português fluente."
+
+- id: qa_amazon
+  prompt: "Explique em 3 parágrafos a importância da Floresta Amazônica para o clima global. Responda em português."
+  category: qa_pt
+  judge_hints: "Verificar: menciona regulação climática, ciclo de água/chuvas, sequestro de carbono, biodiversidade. 3 parágrafos distintos, factualmente correto, português claro."
+
+- id: qa_formula1
+  prompt: "Como funciona o sistema de pontuação atual da Fórmula 1? Quem detém o recorde de mais títulos mundiais de pilotos? Responda em português."
+  category: qa_pt
+  judge_hints: "Sistema: 25-18-15-12-10-8-6-4-2-1 para top 10 + 1 ponto volta mais rápida (se no top 10). Recordistas: Lewis Hamilton e Michael Schumacher (7 títulos cada). Verificar: pontuação correta, recordistas corretos, português fluente."
+
+- id: qa_python_vs_js
+  prompt: "Quais são as principais diferenças entre Python e JavaScript? Quando você escolheria cada um? Responda em português."
+  category: qa_pt
+  judge_hints: "Verificar: menciona tipagem dinâmica em ambos, usos típicos (Python: data science/backend; JS: web/frontend/Node), diferenças relevantes de sintaxe/ecossistema, comparação equilibrada, português correto."

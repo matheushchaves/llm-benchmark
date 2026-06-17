@@ -1,0 +1,24 @@
+- id: reason_handshakes
+  prompt: "Em uma festa com 10 pessoas, cada pessoa cumprimenta todas as outras exatamente uma vez. Quantos cumprimentos acontecem no total? Explique seu raciocínio passo a passo."
+  category: reasoning
+  judge_hints: "Resposta correta: 45 (combinação C(10,2) = 45). Verificar: raciocínio correto, explicação clara, chegou ao resultado certo."
+
+- id: reason_trains
+  prompt: "Dois trens partem simultaneamente de cidades que distam 300 km, se aproximando um do outro. O trem A viaja a 80 km/h e o trem B a 70 km/h. Em quanto tempo se encontrarão? Mostre os cálculos."
+  category: reasoning
+  judge_hints: "Resposta correta: 300/(80+70) = 2 horas. Verificar: cálculo correto da velocidade relativa, resultado em horas."
+
+- id: reason_logic_ages
+  prompt: "Ana é mais velha que Bruno. Carlos é mais novo que Ana mas mais velho que Bruno. Diana é mais velha que Ana. Ordene as 4 pessoas da mais velha para a mais nova."
+  category: reasoning
+  judge_hints: "Resposta correta: Diana > Ana > Carlos > Bruno. Verificar: ordem correta, raciocínio lógico claro."
+
+- id: reason_sequence
+  prompt: "Encontre o número que falta na sequência: 2, 6, 12, 20, 30, __, 56. Explique o padrão."
+  category: reasoning
+  judge_hints: "Resposta correta: 42. Padrão: n*(n+1) onde n=1,2,3,... Verificar: resposta correta e padrão identificado."
+
+- id: reason_coins
+  prompt: "Você tem 8 moedas idênticas visualmente, mas uma é mais pesada que as outras. Com uma balança de dois pratos e apenas 2 pesagens, como você identifica a moeda mais pesada? Descreva a estratégia."
+  category: reasoning
+  judge_hints: "Estratégia ótima: 1ª pesagem: 3 vs 3. Se pender, a mais pesada está no grupo de 3 (pesagem 2: 1 vs 1 dessas 3). Se equilibrar, a mais pesada é uma das 2 restantes (pesagem 2: 1 vs 1). Verificar: estratégia correta em exatamente 2 pesagens."
