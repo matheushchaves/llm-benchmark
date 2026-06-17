@@ -11,7 +11,7 @@ async def call_ollama(
     prompt: str,
     base_url: str = "http://localhost:11434",
 ) -> ModelResponse:
-    async with httpx.AsyncClient(timeout=180.0) as client:
+    async with httpx.AsyncClient(timeout=600.0) as client:
         start = time.perf_counter()
         response = await client.post(
             f"{base_url}/api/chat",
