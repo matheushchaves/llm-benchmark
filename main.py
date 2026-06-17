@@ -1,22 +1,18 @@
 import argparse
 import asyncio
-import os
 from datetime import datetime
 from pathlib import Path
 
-from dotenv import load_dotenv
 from rich.console import Console
 
 from benchmark.report import generate_report
 from benchmark.runner import run_benchmark
 from benchmark.tasks import load_tasks
 
-load_dotenv()
-
 console = Console()
 
 ALL_CATEGORIES = ["code", "reasoning", "summarization", "qa_pt"]
-DEFAULT_MODEL = "claude-haiku-4-5-20251001"
+DEFAULT_MODEL = "sonnet"
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--claude-model",
         default=DEFAULT_MODEL,
-        help=f"Modelo Claude a usar (default: {DEFAULT_MODEL})",
+        help=f"Modelo Claude a usar via CLI (default: {DEFAULT_MODEL})",
     )
     parser.add_argument(
         "--output",
@@ -45,11 +41,6 @@ def parse_args() -> argparse.Namespace:
 
 async def main() -> None:
     args = parse_args()
-
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        console.print("[bold red]Error:[/bold red] ANTHROPIC_API_KEY is not set. Copy .env.example to .env and add your key.")
-        raise SystemExit(1)
-
     timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
     output = args.output or Path(f"results/{timestamp}.md")
 

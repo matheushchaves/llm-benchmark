@@ -1,5 +1,5 @@
 import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -47,17 +47,11 @@ async def test_judge_claude_wins(sample_task, claude_resp, gemma_resp):
         "winner": "A",
         "justification": "A usou lru_cache corretamente",
     })
-    mock_message = MagicMock()
-    mock_message.content = [MagicMock(text=judge_json)]
 
     with (
-        patch("benchmark.judge.AsyncAnthropic") as mock_cls,
+        patch("benchmark.judge._run_judge_cli", new=AsyncMock(return_value=judge_json)),
         patch("benchmark.judge.random.random", return_value=0.0),  # a_is_claude=True
     ):
-        mock_client = AsyncMock()
-        mock_cls.return_value = mock_client
-        mock_client.messages.create = AsyncMock(return_value=mock_message)
-
         result = await judge_responses(sample_task, claude_resp, gemma_resp)
 
     assert isinstance(result, JudgeResult)
@@ -69,27 +63,19 @@ async def test_judge_claude_wins(sample_task, claude_resp, gemma_resp):
 
 @pytest.mark.asyncio
 async def test_judge_gemma_wins_with_swapped_ab(sample_task, claude_resp, gemma_resp):
-    # random.random >= 0.5 → a_is_claude=False → gemma is A
     judge_json = json.dumps({
         "score_a": 4,
         "score_b": 2,
         "winner": "A",
         "justification": "A foi mais claro",
     })
-    mock_message = MagicMock()
-    mock_message.content = [MagicMock(text=judge_json)]
 
     with (
-        patch("benchmark.judge.AsyncAnthropic") as mock_cls,
-        patch("benchmark.judge.random.random", return_value=0.9),  # a_is_claude=False
+        patch("benchmark.judge._run_judge_cli", new=AsyncMock(return_value=judge_json)),
+        patch("benchmark.judge.random.random", return_value=0.9),  # a_is_claude=False → gemma é A
     ):
-        mock_client = AsyncMock()
-        mock_cls.return_value = mock_client
-        mock_client.messages.create = AsyncMock(return_value=mock_message)
-
         result = await judge_responses(sample_task, claude_resp, gemma_resp)
 
-    # gemma foi A, venceu → winner deve ser "gemma"
     assert result.score_gemma == 4
     assert result.score_claude == 2
     assert result.winner == "gemma"

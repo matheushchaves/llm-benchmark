@@ -10,7 +10,7 @@ def test_parse_args_defaults():
         import main
         args = main.parse_args()
     assert args.categories == ["code", "reasoning", "summarization", "qa_pt"]
-    assert args.claude_model == "claude-haiku-4-5-20251001"
+    assert args.claude_model == "sonnet"
     assert args.output is None
 
 
