@@ -32,18 +32,16 @@ def generate_report(
     lines += ["| Categoria | Claude Avg | Gemma Avg | Vencedor |"]
     lines += ["|-----------|-----------|-----------|---------|"]
 
-    total_claude: list[float] = []
-    total_gemma: list[float] = []
     for cat, data in categories.items():
         avg_c = sum(data["claude_scores"]) / len(data["claude_scores"])
         avg_g = sum(data["gemma_scores"]) / len(data["gemma_scores"])
-        total_claude.append(avg_c)
-        total_gemma.append(avg_g)
         winner = "Claude" if avg_c > avg_g else ("Gemma" if avg_g > avg_c else "Empate")
         lines.append(f"| {cat} | {avg_c:.1f} | {avg_g:.1f} | {winner} |")
 
-    grand_c = sum(total_claude) / len(total_claude)
-    grand_g = sum(total_gemma) / len(total_gemma)
+    all_task_claude = [r.judge_result.score_claude for r in results]
+    all_task_gemma = [r.judge_result.score_gemma for r in results]
+    grand_c = sum(all_task_claude) / len(all_task_claude)
+    grand_g = sum(all_task_gemma) / len(all_task_gemma)
     grand_w = "Claude" if grand_c > grand_g else ("Gemma" if grand_g > grand_c else "Empate")
     lines.append(f"| **Total** | **{grand_c:.1f}** | **{grand_g:.1f}** | **{grand_w}** |")
 

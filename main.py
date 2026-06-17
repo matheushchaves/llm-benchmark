@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -44,6 +45,10 @@ def parse_args() -> argparse.Namespace:
 
 async def main() -> None:
     args = parse_args()
+
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        console.print("[bold red]Error:[/bold red] ANTHROPIC_API_KEY is not set. Copy .env.example to .env and add your key.")
+        raise SystemExit(1)
 
     timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
     output = args.output or Path(f"results/{timestamp}.md")

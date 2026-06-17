@@ -28,8 +28,7 @@ async def run_task(task: Task, claude_model: str) -> TaskResult:
 
 
 async def run_benchmark(tasks: list[Task], claude_model: str) -> list[TaskResult]:
-    results = []
-    for task in tasks:
-        result = await run_task(task, claude_model)
-        results.append(result)
-    return results
+    results: list[TaskResult] = await asyncio.gather(
+        *[run_task(t, claude_model) for t in tasks]
+    )
+    return list(results)
