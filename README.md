@@ -130,6 +130,35 @@ Cada arquivo YAML em `tasks/` segue este formato:
     Escreva uma função Python que ...
 ```
 
+Campos obrigatórios: `id` (único por categoria), `category` (deve corresponder ao nome do arquivo), `judge_hints` (critérios que o juiz usa para avaliar), `prompt` (a tarefa em si).
+
+Coloque o arquivo em `tasks/<category>.yaml` ou crie um novo arquivo para uma categoria nova — ele será carregado automaticamente ao passar `--categories <nome>`.
+
+## Como contribuir
+
+Contribuições são bem-vindas. Abra uma [Issue](https://github.com/matheushchaves/llm-benchmark/issues) para sugerir novas categorias, reportar bugs ou discutir melhorias. Pull Requests com novas tasks, modelos suportados ou correções são especialmente úteis.
+
+## O que esperar ao rodar
+
+```
+LLM Benchmark — Claude vs Gemma
+
+  Claude model : sonnet
+  Gemma model  : gemma4:26b-mlx
+  Categories   : code, reasoning, summarization, qa_pt
+  Output       : results/20260618T135436.md
+
+18 tasks carregadas
+
+  → code_fibonacci Claude wins (5 vs 4)
+  → code_binary_search Tie wins (5 vs 5)
+  ...
+
+✓ Relatório salvo em results/20260618T135436.md
+```
+
+Cada task leva ~10s (Claude) + ~72s (Gemma) + tempo do juiz Gemini. Um run completo de 18 tasks leva aproximadamente **30-40 minutos**.
+
 ## Limitações do estudo
 
 - **Amostra pequena**: 18 tasks não é suficiente para conclusões estatisticamente robustas
