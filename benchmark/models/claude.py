@@ -7,16 +7,19 @@ from benchmark.types import ModelResponse
 
 async def _run_claude_cli(prompt: str, model: str) -> dict:
     proc = await asyncio.create_subprocess_exec(
-        "claude", "-p", prompt,
+        "claude", "-p",
         "--output-format", "json",
         "--model", model,
         "--no-session-persistence",
+        stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout, stderr = await proc.communicate()
+    stdout, stderr = await proc.communicate(input=prompt.encode())
     if proc.returncode != 0:
-        raise RuntimeError(f"claude CLI failed: {stderr.decode().strip()}")
+        raise RuntimeError(
+            f"claude CLI failed (rc={proc.returncode}): {stderr.decode().strip() or stdout.decode().strip()}"
+        )
     return json.loads(stdout.decode())
 
 

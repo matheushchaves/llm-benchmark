@@ -41,15 +41,18 @@ def _extract_json(text: str) -> dict:
 
 async def _run_judge_cli(prompt: str) -> str:
     proc = await asyncio.create_subprocess_exec(
-        "claude", "-p", prompt,
+        "claude", "-p",
         "--output-format", "json",
         "--no-session-persistence",
+        stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout, stderr = await proc.communicate()
+    stdout, stderr = await proc.communicate(input=prompt.encode())
     if proc.returncode != 0:
-        raise RuntimeError(f"claude CLI (judge) failed: {stderr.decode().strip()}")
+        raise RuntimeError(
+            f"claude CLI (judge) failed (rc={proc.returncode}): {stderr.decode().strip() or stdout.decode().strip()}"
+        )
     data = json.loads(stdout.decode())
     if data.get("is_error"):
         raise RuntimeError(f"claude CLI (judge) returned error: {data}")
