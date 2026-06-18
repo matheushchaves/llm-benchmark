@@ -9,7 +9,7 @@ from google.genai import types as genai_types
 
 from benchmark.types import JudgeResult, ModelResponse, Task
 
-load_dotenv()
+load_dotenv(override=True)
 
 _MAX_JUDGE_RETRIES = 2
 _JUDGE_MODEL = "gemini-2.0-flash"
@@ -46,6 +46,7 @@ def _get_client() -> genai.Client:
             "Configure em .env ou como variável de ambiente. "
             "Obtenha gratuitamente em https://aistudio.google.com/apikey"
         )
+    # Passa a chave explicitamente para ignorar GOOGLE_API_KEY do shell
     return genai.Client(api_key=api_key)
 
 
