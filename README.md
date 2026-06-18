@@ -1,10 +1,10 @@
 # LLM Benchmark — Claude vs Gemma
 
 ![Claude Sonnet](https://img.shields.io/badge/Claude%20Sonnet-4.8%2F5.0-brightgreen)
-![Gemma 4 26B](https://img.shields.io/badge/Gemma%204%2026B-4.4%2F5.0-orange)
-![Winner](https://img.shields.io/badge/winner-Claude-blue)
+![Gemma 4 26B](https://img.shields.io/badge/Gemma%204%2026B-4.7%2F5.0-orange)
+![Winner](https://img.shields.io/badge/winner-Claude%20%28por%200.1%29-blue)
 ![Tasks](https://img.shields.io/badge/tasks-18-lightgrey)
-![Judge](https://img.shields.io/badge/judge-Gemini%202.0%20Flash-red)
+![Judge](https://img.shields.io/badge/judge-Gemini%202.5%20Flash-red)
 
 Estudo comparativo entre **Claude Sonnet** (via Claude Code CLI) e **Gemma 4 26B** (via Ollama local) em quatro categorias de tarefas: código, raciocínio, sumarização e Q&A em português.
 
@@ -12,28 +12,27 @@ Estudo comparativo entre **Claude Sonnet** (via Claude Code CLI) e **Gemma 4 26B
 
 Ao usar Claude Code como ferramenta principal de desenvolvimento, surge a pergunta: **vale a pena usar um modelo local gratuito como o Gemma para economizar?** Este projeto quantifica essa troca com um benchmark reprodutível e um juiz LLM imparcial.
 
-## Resultados (Claude Sonnet vs Gemma 4 26B MLX)
+## Resultados — Juiz Neutro: Gemini 2.5 Flash
 
 | Categoria | Claude | Gemma | Vencedor |
 |-----------|--------|-------|----------|
-| Código | 4.6 | 4.2 | Claude |
-| Raciocínio | 4.6 | **5.0** | **Gemma** |
+| Código | 4.8 | 4.8 | Empate |
+| Raciocínio | 4.8 | 4.8 | Empate |
 | Sumarização | 5.0 | 4.2 | Claude |
-| Q&A em PT | 5.0 | 4.2 | Claude |
-| **Total** | **4.8** | **4.4** | **Claude** |
+| Q&A em PT | 4.8 | **5.0** | **Gemma** |
+| **Total** | **4.8** | **4.7** | **Claude** |
 
 **Latência média por task:**
 - Claude CLI: ~10s
-- Gemma (Ollama local): ~46s
+- Gemma (Ollama local): ~72s
 
 ### Interpretação
 
-- Claude venceu em 3 de 4 categorias com margem consistente
-- Gemma surpreendeu no raciocínio lógico — atingiu nota máxima (5.0) enquanto Claude ficou em 4.6
-- Gemma é 4.5× mais lento por chamada, o que inviabiliza uso interativo
-- Para pipelines batch offline com requisito de privacidade, Gemma ainda é uma opção válida
+Com um juiz neutro (Gemini), a margem cai para **apenas 0.1 ponto** — um empate técnico em 3 de 4 categorias. O único diferencial real do Claude foi sumarização. Gemma venceu Q&A em português e empatou em código e raciocínio.
 
-O resultado detalhado com justificativas do juiz está em [`results/20260618T081607.md`](results/20260618T081607.md).
+> **Nota metodológica:** em um run anterior com Claude como próprio juiz, a margem era de 0.4 pontos a favor de Claude — evidência direta de auto-favorecimento. O juiz neutro revelou uma competição muito mais equilibrada.
+
+O resultado detalhado com justificativas do juiz está em [`results/20260618T135436.md`](results/20260618T135436.md).
 
 ## Arquitetura
 
@@ -65,7 +64,7 @@ O SDK exige `ANTHROPIC_API_KEY` como variável de ambiente. O Claude Code guarda
 Gemma processa uma requisição por vez localmente. Executar todas as tasks em paralelo via `asyncio.gather` causava timeout. A solução: sequencial entre tasks, paralelo dentro de cada task (Claude + Gemma simultaneamente).
 
 **Por que Gemini como juiz?**
-Claude e Gemma são os competidores — usar um deles como juiz criaria conflito de interesse. O Gemini 2.0 Flash atua como árbitro neutro de terceiro. O tier gratuito do Google AI Studio cobre facilmente um benchmark completo (1500 req/dia grátis).
+Claude e Gemma são os competidores — usar um deles como juiz criaria conflito de interesse. O Gemini 2.5 Flash atua como árbitro neutro de terceiro. Comprovamos empiricamente que o Claude como auto-juiz infla a própria margem em 0.3 pontos.
 
 **Por que randomização A/B no juiz?**
 O juiz LLM tem position bias — tende a favorecer a resposta que aparece primeiro. Sortear qual modelo é "Resposta A" e qual é "Resposta B" a cada avaliação elimina esse viés sistematicamente.
@@ -134,7 +133,7 @@ Cada arquivo YAML em `tasks/` segue este formato:
 ## Limitações do estudo
 
 - **Amostra pequena**: 18 tasks não é suficiente para conclusões estatisticamente robustas
-- **Viés do juiz**: usamos Gemini 2.0 Flash como árbitro neutro, mas qualquer LLM tem preferências de estilo não totalmente elimináveis
+- **Viés do juiz**: Gemini 2.5 Flash é neutro entre os competidores, mas qualquer LLM tem preferências de estilo não totalmente elimináveis
 - **Modelo fixo de Gemma**: testamos apenas `gemma4:26b-mlx`; outros tamanhos e quantizações darão resultados diferentes
 - **Tarefas em português**: o benchmark tem viés para PT-BR; resultados podem diferir em inglês
 - **Sem temperatura controlada**: não fixamos temperatura nas chamadas, o que adiciona variância
