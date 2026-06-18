@@ -4,6 +4,7 @@
 ![Gemma 4 26B](https://img.shields.io/badge/Gemma%204%2026B-4.4%2F5.0-orange)
 ![Winner](https://img.shields.io/badge/winner-Claude-blue)
 ![Tasks](https://img.shields.io/badge/tasks-18-lightgrey)
+![Judge](https://img.shields.io/badge/judge-Gemini%202.0%20Flash-red)
 
 Estudo comparativo entre **Claude Sonnet** (via Claude Code CLI) e **Gemma 4 26B** (via Ollama local) em quatro categorias de tarefas: código, raciocínio, sumarização e Q&A em português.
 
@@ -63,6 +64,9 @@ O SDK exige `ANTHROPIC_API_KEY` como variável de ambiente. O Claude Code guarda
 **Por que tarefas sequenciais?**
 Gemma processa uma requisição por vez localmente. Executar todas as tasks em paralelo via `asyncio.gather` causava timeout. A solução: sequencial entre tasks, paralelo dentro de cada task (Claude + Gemma simultaneamente).
 
+**Por que Gemini como juiz?**
+Claude e Gemma são os competidores — usar um deles como juiz criaria conflito de interesse. O Gemini 2.0 Flash atua como árbitro neutro de terceiro. O tier gratuito do Google AI Studio cobre facilmente um benchmark completo (1500 req/dia grátis).
+
 **Por que randomização A/B no juiz?**
 O juiz LLM tem position bias — tende a favorecer a resposta que aparece primeiro. Sortear qual modelo é "Resposta A" e qual é "Resposta B" a cada avaliação elimina esse viés sistematicamente.
 
@@ -75,6 +79,7 @@ Prompts longos (com as respostas dos dois modelos) passados como argumento de li
 - [uv](https://docs.astral.sh/uv/) — gerenciador de pacotes
 - [Claude Code](https://claude.ai/code) — instalado e autenticado (`claude` disponível no PATH)
 - [Ollama](https://ollama.com/) — rodando localmente com o modelo desejado
+- **Gemini API key** — gratuita em [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 
 ```bash
 ollama pull gemma4:26b-mlx   # ou outro modelo
@@ -86,6 +91,8 @@ ollama pull gemma4:26b-mlx   # ou outro modelo
 git clone https://github.com/matheushchaves/llm-benchmark
 cd llm-benchmark
 uv sync
+cp .env.example .env
+# edite .env e adicione sua GEMINI_API_KEY
 ```
 
 ## Uso
@@ -127,7 +134,7 @@ Cada arquivo YAML em `tasks/` segue este formato:
 ## Limitações do estudo
 
 - **Amostra pequena**: 18 tasks não é suficiente para conclusões estatisticamente robustas
-- **Viés do juiz**: o juiz é Claude — pode favorecer respostas no estilo Claude mesmo com randomização A/B
+- **Viés do juiz**: usamos Gemini 2.0 Flash como árbitro neutro, mas qualquer LLM tem preferências de estilo não totalmente elimináveis
 - **Modelo fixo de Gemma**: testamos apenas `gemma4:26b-mlx`; outros tamanhos e quantizações darão resultados diferentes
 - **Tarefas em português**: o benchmark tem viés para PT-BR; resultados podem diferir em inglês
 - **Sem temperatura controlada**: não fixamos temperatura nas chamadas, o que adiciona variância

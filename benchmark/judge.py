@@ -1,11 +1,18 @@
-import asyncio
 import json
+import os
 import random
 import re
 
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types as genai_types
+
 from benchmark.types import JudgeResult, ModelResponse, Task
 
+load_dotenv()
+
 _MAX_JUDGE_RETRIES = 2
+_JUDGE_MODEL = "gemini-2.0-flash"
 
 _JUDGE_PROMPT = """\
 Você é um avaliador imparcial de modelos de linguagem.
@@ -31,6 +38,17 @@ Responda SOMENTE com JSON válido, sem texto adicional, sem markdown fences, nes
 }}"""
 
 
+def _get_client() -> genai.Client:
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "GEMINI_API_KEY não encontrada. "
+            "Configure em .env ou como variável de ambiente. "
+            "Obtenha gratuitamente em https://aistudio.google.com/apikey"
+        )
+    return genai.Client(api_key=api_key)
+
+
 def _extract_json(text: str) -> dict:
     text = text.strip()
     fenced = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
@@ -39,24 +57,16 @@ def _extract_json(text: str) -> dict:
     return json.loads(text)
 
 
-async def _run_judge_cli(prompt: str) -> str:
-    proc = await asyncio.create_subprocess_exec(
-        "claude", "-p",
-        "--output-format", "json",
-        "--no-session-persistence",
-        stdin=asyncio.subprocess.PIPE,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
+async def _run_judge(prompt: str) -> str:
+    client = _get_client()
+    response = await client.aio.models.generate_content(
+        model=_JUDGE_MODEL,
+        contents=prompt,
+        config=genai_types.GenerateContentConfig(
+            temperature=0.0,
+        ),
     )
-    stdout, stderr = await proc.communicate(input=prompt.encode())
-    if proc.returncode != 0:
-        raise RuntimeError(
-            f"claude CLI (judge) failed (rc={proc.returncode}): {stderr.decode().strip() or stdout.decode().strip()}"
-        )
-    data = json.loads(stdout.decode())
-    if data.get("is_error"):
-        raise RuntimeError(f"claude CLI (judge) returned error: {data}")
-    return data["result"]
+    return response.text
 
 
 async def judge_responses(
@@ -78,7 +88,7 @@ async def judge_responses(
     last_error: Exception | None = None
     last_raw: str = ""
     for _ in range(_MAX_JUDGE_RETRIES + 1):
-        last_raw = await _run_judge_cli(prompt)
+        last_raw = await _run_judge(prompt)
         try:
             data = _extract_json(last_raw)
             break
@@ -86,8 +96,8 @@ async def judge_responses(
             last_error = exc
     else:
         raise ValueError(
-            f"Judge returned non-JSON after {_MAX_JUDGE_RETRIES + 1} attempts. "
-            f"Last response: {last_raw!r}"
+            f"Gemini judge retornou JSON inválido após {_MAX_JUDGE_RETRIES + 1} tentativas. "
+            f"Última resposta: {last_raw!r}"
         ) from last_error
 
     raw_winner = data["winner"]
@@ -102,7 +112,7 @@ async def judge_responses(
         elif raw_winner == "tie":
             winner = "tie"
         else:
-            raise ValueError(f"Unexpected winner value from judge: {raw_winner!r}")
+            raise ValueError(f"Valor inesperado de winner do juiz: {raw_winner!r}")
     else:
         score_claude = data["score_b"]
         score_gemma = data["score_a"]
@@ -113,7 +123,7 @@ async def judge_responses(
         elif raw_winner == "tie":
             winner = "tie"
         else:
-            raise ValueError(f"Unexpected winner value from judge: {raw_winner!r}")
+            raise ValueError(f"Valor inesperado de winner do juiz: {raw_winner!r}")
 
     return JudgeResult(
         score_claude=score_claude,

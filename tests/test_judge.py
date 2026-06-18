@@ -49,7 +49,7 @@ async def test_judge_claude_wins(sample_task, claude_resp, gemma_resp):
     })
 
     with (
-        patch("benchmark.judge._run_judge_cli", new=AsyncMock(return_value=judge_json)),
+        patch("benchmark.judge._run_judge", new=AsyncMock(return_value=judge_json)),
         patch("benchmark.judge.random.random", return_value=0.0),  # a_is_claude=True
     ):
         result = await judge_responses(sample_task, claude_resp, gemma_resp)
@@ -71,7 +71,7 @@ async def test_judge_gemma_wins_with_swapped_ab(sample_task, claude_resp, gemma_
     })
 
     with (
-        patch("benchmark.judge._run_judge_cli", new=AsyncMock(return_value=judge_json)),
+        patch("benchmark.judge._run_judge", new=AsyncMock(return_value=judge_json)),
         patch("benchmark.judge.random.random", return_value=0.9),  # a_is_claude=False → gemma é A
     ):
         result = await judge_responses(sample_task, claude_resp, gemma_resp)
