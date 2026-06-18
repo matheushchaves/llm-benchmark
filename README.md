@@ -1,5 +1,10 @@
 # LLM Benchmark — Claude vs Gemma
 
+![Claude Sonnet](https://img.shields.io/badge/Claude%20Sonnet-4.8%2F5.0-brightgreen)
+![Gemma 4 26B](https://img.shields.io/badge/Gemma%204%2026B-4.4%2F5.0-orange)
+![Winner](https://img.shields.io/badge/winner-Claude-blue)
+![Tasks](https://img.shields.io/badge/tasks-18-lightgrey)
+
 Estudo comparativo entre **Claude Sonnet** (via Claude Code CLI) e **Gemma 4 26B** (via Ollama local) em quatro categorias de tarefas: código, raciocínio, sumarização e Q&A em português.
 
 ## Motivação
