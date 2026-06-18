@@ -54,13 +54,19 @@ def generate_report(
     lines.append(f"| Gemma  | {sum(all_g_lat)/len(all_g_lat):.0f} |")
 
     lines += ["", "## Detalhes por Task", ""]
-    lines += ["| ID | Categoria | Claude | Gemma | Vencedor | Justificativa |"]
-    lines += ["|----|-----------|--------|-------|----------|---------------|"]
     for r in results:
         jr = r.judge_result
         w = jr.winner.capitalize()
-        just = (jr.justification[:80] + "...").replace("|", "/")
-        lines.append(f"| {r.task.id} | {r.task.category} | {jr.score_claude} | {jr.score_gemma} | {w} | {just} |")
+        lines += [
+            f"### {r.task.id}",
+            f"**Categoria:** {r.task.category} | "
+            f"**Claude:** {jr.score_claude} | "
+            f"**Gemma:** {jr.score_gemma} | "
+            f"**Vencedor:** {w}",
+            "",
+            jr.justification,
+            "",
+        ]
 
     md = "\n".join(lines)
 
